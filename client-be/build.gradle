@@ -44,7 +44,8 @@ repositories {
 }
 
 dependencies {
-    compile project(":common-swagger")
+	compile project(":common-swagger")
+	compile project(":common-controller-advice")
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'//compile
 	implementation 'org.springframework.boot:spring-boot-starter-web'//compile
 	runtimeOnly 'mysql:mysql-connector-java'

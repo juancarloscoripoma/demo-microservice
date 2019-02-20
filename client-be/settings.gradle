@@ -1,3 +1,5 @@
 include ":common-swagger"
 project(":common-swagger").projectDir = file("../common-swagger")
+include ":common-controller-advice"
+project(":common-controller-advice").projectDir = file("../common-controller-advice")
 rootProject.name = 'client-be'
