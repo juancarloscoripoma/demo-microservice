@@ -7,6 +7,7 @@ import com.soft.cli.apigateway.config.dto.AuthTokenInfo;
 import com.soft.cli.apigateway.config.dto.OauthCs;
 import com.soft.cli.apigateway.config.oauth.OauthProperties;
 import com.soft.cli.apigateway.core.service.Oauth2Service;
+import com.soft.cli.common.exceptions.util.Check;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,10 +76,10 @@ public class Oauth2ServiceImpl implements Oauth2Service {
         } catch (HttpClientErrorException e) {
             log.debug("ERROR HttpClientErrorException {} ", e.getMessage());
             log.debug("ERROR State {} ", e.getStatusCode().value());
-            //Check.internal("error.internalUser", e);
+            Check.internal("error.internalUser", e);
         } catch (Exception e) {
             log.debug("ERROR Exception {} ", e.getMessage());
-            //Check.internal("error.internal", e);
+            Check.internal("error.internal", e);
         }
         if (responseEntity != null) if (responseEntity.getStatusCode().toString().equals("200")) {
             return responseEntity.getBody();
@@ -94,7 +95,7 @@ public class Oauth2ServiceImpl implements Oauth2Service {
         String url = "http://config-general/api/roles/thereIsRoleByClient?login={user}&clientId={clientId}";
         Boolean access = cgTemplate.exchange(url, HttpMethod.GET, entity, Boolean.class, user, clientId).getBody();
         if (!access) {
-            //Check.code(HttpStatus.BAD_REQUEST);
+            Check.code(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -108,9 +109,9 @@ public class Oauth2ServiceImpl implements Oauth2Service {
                     .exchange(oauthProperties.getLogout(),
                             HttpMethod.POST, request, String.class);
         } catch (HttpClientErrorException e) {
-            //Check.internal("error.internal", e);
+            Check.internal("error.internal", e);
         } catch (Exception e) {
-            //Check.internal("error.internal", e);
+            Check.internal("error.internal", e);
         }
         if (responseEntity != null) if (responseEntity.getStatusCode().toString().equals("200")) {
             return responseEntity.getBody();
@@ -132,9 +133,9 @@ public class Oauth2ServiceImpl implements Oauth2Service {
                     .exchange(oauthProperties.getAccount(),
                             HttpMethod.GET, request, AccountDTO.class);
         } catch (HttpClientErrorException e) {
-            //Check.internal("error.internal", e);
+            Check.internal("error.internal", e);
         } catch (Exception e) {
-            //Check.internal("error.internal", e);
+            Check.internal("error.internal", e);
         }
         if (responseEntity != null) if (responseEntity.getStatusCode().toString().equals("200")) {
             log.debug("account : {} ", responseEntity.getBody());
@@ -158,10 +159,10 @@ public class Oauth2ServiceImpl implements Oauth2Service {
                             HttpMethod.GET, request, Boolean.class);
         } catch (HttpClientErrorException e) {
             log.debug("URL GET ACTIVE HttpClientErrorException : {} ", e.getMessage());
-            //Check.internal("error.internal", e);
+            Check.internal("error.internal", e);
         } catch (Exception e) {
             log.debug("URL GET ACTIVE Exception : {} ", e.getMessage());
-            //Check.internal("error.internal", e);
+            Check.internal("error.internal", e);
         }
         if (responseEntity != null) if (responseEntity.getStatusCode().toString().equals("200")) {
             log.debug("account : {} ", responseEntity.getBody());
@@ -186,10 +187,10 @@ public class Oauth2ServiceImpl implements Oauth2Service {
         } catch (HttpClientErrorException e) {
             log.debug("ERROR HttpClientErrorException {} ", e.getMessage());
             log.debug("ERROR State {} ", e.getStatusCode().value());
-            //Check.internal("error.internal", e);
+            Check.internal("error.internal", e);
         } catch (Exception e) {
             log.debug("ERROR Exception {} ", e.getMessage());
-            //Check.internal("error.internal", e);
+            Check.internal("error.internal", e);
         }
         if (responseEntity != null) if (responseEntity.getStatusCode().toString().equals("200")) {
             return responseEntity.getBody();

@@ -5,6 +5,7 @@ import com.soft.cli.apigateway.config.dto.AuthTokenClientInfo;
 import com.soft.cli.apigateway.config.dto.AuthTokenInfo;
 import com.soft.cli.apigateway.config.dto.OauthCs;
 import com.soft.cli.apigateway.core.service.Oauth2Service;
+import com.soft.cli.common.exceptions.util.Check;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +35,8 @@ public class Oauth2Controller {
                                                   @RequestHeader("authorization") String authorization
                                    ){
         log.debug("AuthTokenInfo data {} , {} , {} , {} , {} ",client_id,grant_type,password,username,authorization);
-        //Check.notEmpty(grant_type,"error.grandType", grant_type);
-        //Check.isTrue(grant_type.equals("password"),"error.grandTypeInvalid",grant_type);
+        Check.notEmpty(grant_type,"error.grandType", grant_type);
+        Check.isTrue(grant_type.equals("password"),"error.grandTypeInvalid",grant_type);
         AuthTokenInfo authTokenInfo = oauth2Service
                 .login(new OauthCs(client_id,grant_type,"",
                         "",Boolean.FALSE,password,username),authorization);
@@ -67,8 +68,8 @@ public class Oauth2Controller {
                                                          @RequestHeader("authorization") String authorization
     ){
         log.debug("AuthTokenInfo data {} , {} , {} , {} ",client_id,grant_type,client_secret,authorization);
-        //Check.notEmpty(grant_type,"error.grandType", grant_type);
-        //Check.isTrue(grant_type.equals("client_credentials"),"error.grandTypeInvalid",grant_type);
+        Check.notEmpty(grant_type,"error.grandType", grant_type);
+        Check.isTrue(grant_type.equals("client_credentials"),"error.grandTypeInvalid",grant_type);
         AuthTokenClientInfo authTokenClientInfo = oauth2Service
                 .client(new OauthCs(client_id,grant_type,client_secret,
                         "",Boolean.TRUE,"",""),authorization);
@@ -83,8 +84,8 @@ public class Oauth2Controller {
                                                          @RequestHeader("authorization") String authorization
     ){
         log.debug("AuthTokenInfo refresh_token data {} , {} , {} , {} ",client_id,grant_type,client_secret,refresh_token);
-        //Check.notEmpty(grant_type,"error.grandType", grant_type);
-        //Check.isTrue(grant_type.equals("refresh_token"),"error.grandTypeInvalid",grant_type);
+        Check.notEmpty(grant_type,"error.grandType", grant_type);
+        Check.isTrue(grant_type.equals("refresh_token"),"error.grandTypeInvalid",grant_type);
         AuthTokenInfo authTokenClientInfo = oauth2Service
                 .loginRefreshToken(new OauthCs(client_id,grant_type,client_secret,
                         refresh_token,Boolean.FALSE,"",""),authorization);
