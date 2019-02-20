@@ -1,5 +1,6 @@
 package com.soft.cli.oauthservice.core.service.impl;
 
+import com.soft.cli.common.exceptions.util.Check;
 import com.soft.cli.oauthservice.core.entity.Account;
 import com.soft.cli.oauthservice.core.entity.Authority;
 import com.soft.cli.oauthservice.core.entity.Permission;
@@ -65,7 +66,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account update(String name, RbcAccount rbcAccount) {
         Account account = accountRepository.findByUsername(rbcAccount.getName());
-        //Check.notNull(account,"error.noData",rbcAccount.getName());
+        Check.notNull(account,"error.noData",rbcAccount.getName());
         //SingleUtil singleUtil = SingleUtil.getInstance();
         //String encryptPassword = singleUtil.encryptPassword(rbcAccount.getPassword());
         log.debug("password {} ",rbcAccount.getPassword());
@@ -76,7 +77,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void delete(String name) {
         Account account = accountRepository.findByUsername(name);
-        //Check.notNull(account,"error.noData", name);
+        Check.notNull(account,"error.noData", name);
         account.setEnabled(true);
         accountRepository.save(account);
     }
@@ -84,9 +85,9 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account findOnePermission(String name) {
         Account account = accountRepository.findByUsername(name);
-        //Check.notNull(account,"error.noData", name);
+        Check.notNull(account,"error.noData", name);
         Permission permission = permissionService.findOneUserIdToAndCurrentTrue(account.getId());
-        //Check.notNull(permission,"error.noData", name);
+        Check.notNull(permission,"error.noData", name);
         return accountRepository.findOneById(permission.getUserIdFrom());
     }
 
@@ -94,11 +95,11 @@ public class AccountServiceImpl implements AccountService {
     public Boolean findOnePermissionActive(String userName) {
         Account account = accountRepository.findByUsername(userName);
         Boolean i = Boolean.FALSE;
-        //Check.notNull(account,"error.noData", userName);
+        Check.notNull(account,"error.noData", userName);
         if (account.getAuthorities().stream().anyMatch(authority -> Objects.equals(authority.getName(),"ROLE_PENALTY"))){
             i = Boolean.TRUE;
         }
-        //Check.isTrue(!i,"error.noData", userName);
+        Check.isTrue(!i,"error.noData", userName);
         return i;
     }
 }

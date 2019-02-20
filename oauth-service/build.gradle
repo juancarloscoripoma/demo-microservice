@@ -46,7 +46,7 @@ ext {
 
 dependencies {
 
-	//compile project(":common-controller-advice")
+	compile project(":common-controller-advice")
 	compile('org.springframework.boot:spring-boot-starter-actuator')
 	compile('org.springframework.cloud:spring-cloud-starter-bus-amqp')
 	compile('org.springframework.boot:spring-boot-starter-security')

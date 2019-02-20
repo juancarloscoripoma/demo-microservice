@@ -1,5 +1,6 @@
 package com.soft.cli.oauthservice.core.service.impl;
 
+import com.soft.cli.common.exceptions.util.Check;
 import com.soft.cli.oauthservice.core.entity.ApplicationClient;
 import com.soft.cli.oauthservice.core.entity.OauthClientDetails;
 import com.soft.cli.oauthservice.core.repository.ApplicationClientRepository;
@@ -54,7 +55,7 @@ public class OauthClientDetailsServiceImpl implements OauthClientDetailsService 
     public OauthClientDetailsDTO create(OauthClientDetailsDTO oauthClientDetailsDTO) {
         log.debug("secret password {} ",passwordEncoder.encode(oauthClientDetailsDTO.getClientSecret()));
         OauthClientDetails oauthClientDetails = oauthClientDetailsRepository.findOne(oauthClientDetailsDTO.getClient());
-        //Check.isNull(oauthClientDetails,"error.duplicate",oauthClientDetailsDTO.getClient());
+        Check.isNull(oauthClientDetails,"error.duplicate",oauthClientDetailsDTO.getClient());
 
         oauthClientDetails = new OauthClientDetails();
         oauthClientDetails.setAccessTokenValidity(oauthClientDetailsDTO.getAccessTokenValidity());
@@ -83,7 +84,7 @@ public class OauthClientDetailsServiceImpl implements OauthClientDetailsService 
     @Transactional
     public OauthClientDetailsDTO update(OauthClientDetailsDTO oauthClientDetailsDTO) {
         OauthClientDetails oauthClientDetails = oauthClientDetailsRepository.findOne(oauthClientDetailsDTO.getClient());
-        //Check.notNull(oauthClientDetails,"error.noData",oauthClientDetailsDTO.getClient());
+        Check.notNull(oauthClientDetails,"error.noData",oauthClientDetailsDTO.getClient());
         log.debug("secret password {} ",passwordEncoder.encode(oauthClientDetailsDTO.getClientSecret()));
         oauthClientDetails.setAccessTokenValidity(oauthClientDetailsDTO.getAccessTokenValidity());
         oauthClientDetails.setAdditionalInformation(oauthClientDetailsDTO.getAdditionalInformation());
