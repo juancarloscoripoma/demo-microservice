@@ -1,0 +1,167 @@
+import org.gradle.internal.os.OperatingSystem
+
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.5.19.RELEASE'
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+defaultTasks 'bootRun'
+
+group = 'com.soft.cli'
+
+allprojects {
+	gradle.projectsEvaluated {
+		tasks.withType(JavaCompile) {
+			options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+		}
+	}
+}
+
+jar {
+	baseName = 'clients'
+	version  = '0.0.1'
+}
+
+springBoot {
+	mainClass = 'com.soft.cli.clientbe.ClientBeApplication'
+	executable = true
+	buildInfo()
+}
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+    compile project(":common-swagger")
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'//compile
+	implementation 'org.springframework.boot:spring-boot-starter-web'//compile
+	runtimeOnly 'mysql:mysql-connector-java'
+	compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.8.0'
+	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.8.0'
+	compile('org.projectlombok:lombok')
+
+	compile('org.springframework.security.oauth:spring-security-oauth2')
+	//compile('org.springframework.cloud:spring-cloud-commons')
+	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-commons
+	//compile group: 'org.springframework.cloud', name: 'spring-cloud-commons', version: '1.2.2.RELEASE'
+
+	compile('org.springframework.boot:spring-boot-starter-hateoas')
+	//compile('org.springframework.cloud:spring-cloud-starter-openfeign')
+	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-openfeign
+	//compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '1.4.2.RELEASE'
+
+
+	compile "io.springfox:springfox-bean-validators:2.8.0"
+	runtime('org.springframework.boot:spring-boot-devtools')
+	compile "io.springfox:springfox-bean-validators:2.8.0"
+
+
+	compile('javax.mail:javax.mail-api')
+	compile('com.sun.mail:javax.mail')
+	compile('org.springframework:spring-context-support')
+	compile("org.springframework.cloud:spring-cloud-starter-oauth2")
+	compile 'org.springframework.cloud:spring-cloud-starter-config'
+	compile('org.springframework.cloud:spring-cloud-starter-eureka')
+	compile("org.springframework.cloud:spring-cloud-starter-hystrix")
+	
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	
+	
+	/*
+	compile("org.springframework.cloud:spring-cloud-starter-oauth2")
+	compile 'org.springframework.cloud:spring-cloud-starter-config'
+	compile('org.springframework.cloud:spring-cloud-starter-eureka')
+	compile('org.springframework.cloud:spring-cloud-starter-ribbon')
+	compile('org.springframework.cloud:spring-cloud-starter-stream-rabbit')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.cloud:spring-cloud-starter-bus-amqp')
+	compile('org.springframework.boot:spring-boot-starter-actuator')
+	compile("org.springframework.cloud:spring-cloud-config-client")
+	compile("org.springframework.boot:spring-boot-starter-data-jpa")
+	compile("org.springframework.boot:spring-boot-starter-jersey")
+	compile("org.springframework.boot:spring-boot-configuration-processor")
+	compile("org.springframework.boot:spring-boot-starter-aop")
+	compile("com.fasterxml.jackson.datatype:jackson-datatype-hibernate4:2.9.7")
+	compile("com.fasterxml.jackson.datatype:jackson-datatype-hppc:2.9.7")
+	compile('com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.7')
+	compile("com.fasterxml.jackson.datatype:jackson-datatype-json-org:2.9.7")
+	compile('org.springframework.boot:spring-boot-starter-hateoas')
+	compile("org.springframework.cloud:spring-cloud-starter-hystrix")
+	compile('org.assertj:assertj-core:3.11.1')
+	compile("org.springframework.cloud:spring-cloud-starter-feign")
+	compile('org.springframework:spring-context-support')
+	compile('javax.mail:javax.mail-api')
+	compile('com.sun.mail:javax.mail')
+	compile('org.springframework.boot:spring-boot-starter-freemarker')
+	compile('org.apache.commons:commons-lang3:3.8.1')
+	compile('javax.validation:validation-api:2.0.1.Final')
+	compile('org.hibernate:hibernate-validator:6.0.13.Final')
+	compile('org.hibernate:hibernate-validator-annotation-processor:6.0.13.Final')//TODO re-viewer version
+	compile ('javax.el:javax.el-api:3.0.0')//TODO re-viewer version
+	compile ('org.glassfish.web:javax.el:2.2.6')//TODO re-viewer version
+	runtime('org.springframework.boot:spring-boot-devtools')
+	compileOnly('org.projectlombok:lombok')
+	runtime('mysql:mysql-connector-java')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	*/
+}
+
+ext {
+	springCloudVersion = 'Edgware.SR5'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+
+/**
+ * Lets you pick Spring Boot profile by system properties, e.g.
+ * gradle bootRun -Dspring.profiles.active=dev
+ * java -jar -Dspring.profiles.active=dev applicationName.jar
+ */
+
+if (OperatingSystem.current().isWindows()) {
+	task pathingJar(type: Jar) {
+		dependsOn configurations.runtime
+		appendix = 'pathing'
+
+		doFirst {
+			manifest {
+				attributes 'Class-Path': configurations.runtime.files.collect {
+					it.toURL().toString().replaceFirst(/file:\/+/, '/').replaceAll(' ', '%20')
+				}.join(' ')
+			}
+		}
+	}
+
+	bootRun {
+		addResources = false
+		dependsOn pathingJar
+		doFirst {
+			classpath = files("$buildDir/classes/main", "$buildDir/resources/main", pathingJar.archivePath)
+		}
+	}
+} else {
+	bootRun {
+		addResources = false
+	}
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '3.5'
+}

@@ -1,0 +1,3 @@
+include ":common-swagger"
+project(":common-swagger").projectDir = file("../common-swagger")
+rootProject.name = 'client-be'
