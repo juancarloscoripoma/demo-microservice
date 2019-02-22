@@ -51,7 +51,7 @@ public class Oauth2ServiceImpl implements Oauth2Service {
                                     + "&password=" + oauthCs.getPassword()
                                     + "&username=" + oauthCs.getUsername(),
                             HttpMethod.POST, request, AuthTokenInfo.class);
-            clientAccess(oauthCs.getClient_id(), oauthCs.getUsername(), responseEntity.getBody());
+            /*clientAccess(oauthCs.getClient_id(), oauthCs.getUsername(), responseEntity.getBody())*/;
         if (responseEntity.getStatusCode().toString().equals("200")) {
             return responseEntity.getBody();
         }
